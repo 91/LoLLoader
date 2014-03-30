@@ -1,8 +1,28 @@
 LoLLoader:  A lolcat image viewer for the Android platform.  The app uses Flickr's API services to find and fetch
 	        images of lolcats.
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Second Phase:  For this phase I wanted to make everything more dynamic and scalable.  
 
-First Commit:  For this phase I was wanting to get a "proof of concept" for the app.  
+1) Replaced previously hardcoded URLs and strings and made them update accordingly.  
+
+2) added an onClickListener() to the picture that calls the FlickrImageLoader that preforms 
+   an async task to load a new photo.
+
+3) I used a JSON request to get information about the URL that contained the image I wanted to load.
+   I then used that data to construct a URL of this format:
+   http://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
+
+4) Created a ProgressDialog that is initalized in the FlickrImageLoader's onPreExecute() and dismissed in onPostExecute(Bitmap result)
+
+
+At this point all of the technology is there so from here I want to improve the UI by making the images fullscreen, enabling rotation, and integrating a menu.  I also
+need to make sure that I have some type of persistance so the user does not see the same sequence of images when the app starts a new session.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+First Phase:  For this phase I was wanting to get a "proof of concept" for the app.  
 
 I hard-coded a sample URL of an image and then used an Async task to fetch and display it.  I created a class called
 FlickrImageLoader which creates a HttpURLConnection to Flickr and downloads the image.  Upon completion it sets the
@@ -28,3 +48,4 @@ two difficult parts in this:
 	page (Optional) : The page of results to return. If this argument is omitted, it defaults to 1.
 
 	Right now I am thinking about placing photos that loaded in a Queue and loading them in advance so the user gets more lols and less waits.
+	------------------------------------------------------------------------------------------------------------------------------------------------------------------------
