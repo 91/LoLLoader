@@ -1,0 +1,30 @@
+LoLLoader:  A lolcat image viewer for the Android platform.  The app uses Flickr's API services to find and fetch
+	        images of lolcats.
+
+
+First Commit:  For this phase I was wanting to get a "proof of concept" for the app.  
+
+I hard-coded a sample URL of an image and then used an Async task to fetch and display it.  I created a class called
+FlickrImageLoader which creates a HttpURLConnection to Flickr and downloads the image.  Upon completion it sets the
+image to the main screen of the app.  This first commit gives me a good basis for Requesting and downloading images 
+from Flickr and how I am going use an async task.
+
+My next step is to create a class that sends a request to Flickr for information about pictures to download.  I forsee
+two difficult parts in this:
+
+1)  Parsing the response.  
+
+	A call like this:  	Flickr sample search request:  http://api.flickr.com/services/rest/?&method=flickr.photos.search&api_key=8cc252462b263ba4f14a6e6d53ae62b2&tags=lolcat
+
+	returns this:
+
+	<photo id="13468770644" owner="23717609@N02" secret="63315b363b" server="2840" farm="3" title="LOLDRAGONS 12" ispublic="1" isfriend="0" isfamily="0"/><photo id="13334911925" owner="30151231@N00" secret="e06eaea0d6" server="3812" farm="4" title="Overly anxious cat" ispublic="1" isfriend="0" isfamily="0"/><photo id="13238932495" owner="14797809@N06" secret="4ac52c1a39" server="7070" farm="8" title="Après le repos ... Un peu de sport ! ;)" ispublic="1" isfriend="0" isfamily="0"/><photo id="13239104163" owner="14797809@N06" secret="3b2d02b2e5" server="7100" farm="8" title="Après le repos ... Un peu de sport ! ;)" ispublic="1" isfriend="0" isfamily="0"/><photo id="13238936365" owner="14797809@N06" secret="08445580a3" server="3828" farm="4" title="Après le repos ... Un peu de sport ! ;)" ispublic="1" isfriend="0" isfamily="0"/><photo id="13239240714" owner="14797809@N06" secret="822111ac0c" server="7264" farm="8" title="Après le repos ... Un peu de sport ! ;)" ispublic="1" isfriend="0" isfamily="0"/><photo id="13239294004" owner="14797809@N06" secret="d9e9823eb7" server="3805" farm="4" title="Après le repos ... Un peu de sport ! ;)" ispublic="1" isfriend="0" isfamily="0"/><photo id="13239090733" owner="14797809@N06" secret="d3b54140c0" server="3822" farm="4" title="Après le repos ... Un peu de sport ! ;)" ispublic="1" isfriend="0" isfamily="0"/>
+	...[And a lot more]
+
+2)  Avoiding duplicates:  If I repeatedly do a search like that above then I will keep on getting the same response.  Nobody wants to see the same lolcat more than once, unless it's
+	GrumpyCat.  from the API I see two calls that will help:
+
+	per_page (Optional) : Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
+	page (Optional) : The page of results to return. If this argument is omitted, it defaults to 1.
+
+	Right now I am thinking about placing photos that loaded in a Queue and loading them in advance so the user gets more lols and less waits.
