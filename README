@@ -1,5 +1,65 @@
-LoLLoader:  A lolcat image viewer for the Android platform.  The app uses Flickr's API services to find and fetch
-	        images of lolcats.
+This App was created by Dalton Schmidt daltschmidt@gmail.com for a coding challenge issued by CrowdTorch for their recruiting process Using Eclipse and ADT Plugin.
+
+LoLLoader:  A lolcat image viewer for the Android platform.  The app uses Flickr's API services to find and fetch images of lolcats. Created 3/29/2014
+
+
+UI Overview:  This app had a simple goal when presented:  Display pictures of lolcats when the user clicks on the screen.  With that goal in mind I decided to create
+use a very simplistic UI that only has an ImageView in the Layout.  I hid all of the System navigation bars/status bars, but they can be brought up by swiping down from
+the top of the screen (But that also loads another image, which is a bug/flaw).  The Settings menu is also very minimalistic, allowing the user to save photos he likes
+by tapping the ListItem "Download Image".  The images scale to their appropiate proportions and I created a black background for the unfilled areas, which is clickable.
+
+Design Overview:  I initially started by making a separate class file called LoadFlickrPhoto, which extended AsyncTask.  I made a lot of progress this way but I did not
+like how disconnected I was from the LoLLoaderActivity.  Using this separate class made it very hard to update the UI and variables of the activity because I had to pass
+them in the constructor and reference them later.  This got too unweildy and annoying so I decided to make it as a private inner class of the LoLLoader Activity, which made
+things a lot easier.  The downsides to using an inner class like this is that it cannot be reused elsewhere and is not scalable, but for the scope of this App it made a lot
+of sense.
+
+What I learned:
+
+-The powers and frustrations of AsyncTask:  Doing networking stuff in background threads is vital for an app like this, and creating an inner class that implemented AsyncTask
+ made it relatively easy.  However, I encountered a lot of problems with AsyncTask when the application went through a state change such as changing orientation.
+
+-REST API,HTTP requests, and URL downloading:  I thought it was pretty cool that I could interface with another third party service without using any of their libraries
+ in the app.  I can see that the power in this comes from being able to request/access/download data regardless of the platform.
+
+-Android APIs and Permissions:  I initially wanted to use an Immersive activity and I did a lot of reading about it.  It seems like an awesome, untapped feature that will
+ be used in newer apps.  While I did not use it, it got me thinking about how the Android Platform evolves and that you can implement API-specific functionality for different
+ devices running different versions of Android.  As for permissions, I learned that it is good manners to ask for permission to use the internet, read/write to disk, or even vibrate.
+
+-Android Life Cycle:  I learned a lot about it in my Android Development class but this project gave me a lot more insight into why and when the state of an application changes, and
+ how to respond to the changes (such as saving important variables).
+
+
+THE BUGS!!!!
+
+ 1)  Changing screen orientation when loading a picture can cause the App to crash.  I tried workarounds such as temporarily locking screen orientation or stopping the
+     AsyncTask, but I could not get anything to work.
+
+ 2)  Swiping down from top of the screen brings up navigation bar, but also loads another picture.  I never found a way to filter out the Gesture to show the navbar
+     from the Gesture to tap the image.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Third (Final) Phase:  For this phase I wanted to display full screen images, enable screen rotation, provide persistence, and integrate a menu.
+
+1)  Making the image fullscreen was pretty easy:  
+    In the lollayout, I used these calls: android:layout_width="fill_parent" android:layout_height="fill_parent" android:scaleType="fitCenter" 
+    and in the onCreate method I made this call getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+    I initially started to use the new "Immersive" feature for fullscreen, but I realized it was not necessary for this app.  It's only supporded on 4.4 and
+    the features of this app did not really call for a minimum API level of 19 (4.4 KitKat).
+
+2)  Screen rotation was easy to implement with the onSaveInstanceState() method.  All I did was save the current image being displayed into the bundle and loaded
+     it upon the next onCreate.  However, if the app gets destroyed then it will load a new image from Flickr.  I ran into a big issue with rotating the screen while
+     an image was loading.  The app is susceptible to crashing if the user changes the orientation while loading.  I tried many ways to fix it but I could not find one
+     that worked.  The problem with this is that the AsyncTask continues to execute when the orientation changes and causes an error when it tries to update the ImageView
+
+3)  Persistence,  as said in (3), I used the onSaveInstanceState() to save the bitmap of the image being displayed.
+
+4)  Menu, I was hoping to do more with the menu but all I implemented was a download image option.  I wanted to make a view downloaded images option but I could not find
+    an easy way to do it.  I thought it would be as easy as creating an intent to load a folder in Gallery, but I was wrong.
+
+5)  I added a Vibrator for haptic feedback once the user presses the screen.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Second Phase:  For this phase I wanted to make everything more dynamic and scalable.  
@@ -19,10 +79,7 @@ Second Phase:  For this phase I wanted to make everything more dynamic and scala
 At this point all of the technology is there so from here I want to improve the UI by making the images fullscreen, enabling rotation, and integrating a menu.  I also
 need to make sure that I have some type of persistance so the user does not see the same sequence of images when the app starts a new session.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-First Phase:  For this phase I was wanting to get a "proof of concept" for the app.  
+First (Beginning) Phase:  For this phase I was wanting to get a "proof of concept" for the app.  
 
 I hard-coded a sample URL of an image and then used an Async task to fetch and display it.  I created a class called
 FlickrImageLoader which creates a HttpURLConnection to Flickr and downloads the image.  Upon completion it sets the
@@ -48,4 +105,9 @@ two difficult parts in this:
 	page (Optional) : The page of results to return. If this argument is omitted, it defaults to 1.
 
 	Right now I am thinking about placing photos that loaded in a Queue and loading them in advance so the user gets more lols and less waits.
+
+	REVISITED AFTER COMPLETION:  I did not go with the Queue because I could not think of a good way to integrate it with an AsyncTask, which gets sketchy when the App changes
+	it's life cycle (onCreate, onDestroy, etc).  Instead of using an XML request, I found out that there was a way to use JSON, which I prefer to use over XML.  To avoid duplicates
+	I got rid of the "counter" and went with random generation of the picture index.  I also discovered that it's possible to sort by relevance and I think it gives different results
+	every time anyways.
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------

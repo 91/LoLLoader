@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">LoLLoader</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-
+    <string name="download_image">Download Image</string>
+    <string name="img_description">This is a fullscreen ImageView</string>
+    
 </resources>

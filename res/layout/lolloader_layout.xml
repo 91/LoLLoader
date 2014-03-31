@@ -4,16 +4,12 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dip"
-        android:text="Loading image from url" />
-
     <ImageView
         android:id="@+id/image"
+        android:contentDescription="@string/img_description"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dip" />
-
+    	android:layout_height="fill_parent"
+    	android:scaleType="fitCenter" 
+    	android:background="@color/black"/>
+    
 </LinearLayout>
